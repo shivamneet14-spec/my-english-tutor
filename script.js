@@ -1,5 +1,6 @@
 // 1. Your Secret API Key (Paste it between the quotes below)
-const API_KEY = 'AIzaSyBLyCE6a7ZryKR7pw8XWnvtpB3QjEZ1f8s'; 
+const API_KEY = 'YOUR_API_KEY_HERE'; 
+
 // --- WORD OF THE DAY LOGIC ---
 
 // 1. Create a dictionary of words
@@ -57,7 +58,7 @@ const chatWindow = document.getElementById('chat-window');
 const userInput = document.getElementById('user-input');
 const sendBtn = document.getElementById('send-btn');
 
-// 3. Function to talk to the AI Brain
+// 3. Function to talk to the AI Brain (UPDATED WITH VOICE)
 async function fetchAIResponse(userText) {
     // Show a temporary "Typing..." message
     const aiMessage = document.createElement('p');
@@ -88,6 +89,12 @@ async function fetchAIResponse(userText) {
         
         // Update the screen with the real reply
         aiMessage.innerHTML = "<strong>Tutor:</strong> " + aiReply;
+
+        // Tell the browser to speak the reply out loud!
+        if (typeof speakText === 'function') {
+            speakText(aiReply);
+        }
+
     } catch (error) {
         aiMessage.textContent = "Tutor: Oops! Make sure you are connected to the internet and your API key is correct.";
     }
@@ -110,46 +117,7 @@ function sendMessage() {
     chatWindow.scrollTop = chatWindow.scrollHeight;
 
     // Call the AI Brain!
-    // 3. Function to talk to the AI Brain (UPDATED WITH VOICE)
-async function fetchAIResponse(userText) {
-    // Show a temporary "Typing..." message
-    const aiMessage = document.createElement('p');
-    aiMessage.textContent = "Tutor is typing...";
-    aiMessage.style.color = "#333";
-    chatWindow.appendChild(aiMessage);
-    chatWindow.scrollTop = chatWindow.scrollHeight;
-
-    // The instructions for how the AI should act
-    const prompt = `You are a friendly, helpful English tutor. The user just said: "${userText}". 
-    First, gently correct any grammar mistakes they made. 
-    Then, reply to them in simple, easy-to-understand English. 
-    Finally, end with a simple question to keep the conversation going. Keep it short.`;
-
-    try {
-        // Send the request to the Gemini API
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                contents: [{ parts: [{ text: prompt }] }]
-            })
-        });
-
-        // Read the AI's reply
-        const data = await response.json();
-        const aiReply = data.candidates[0].content.parts[0].text;
-        
-        // Update the screen with the real reply
-        aiMessage.innerHTML = "<strong>Tutor:</strong> " + aiReply;
-
-        // NEW: Tell the browser to speak the reply out loud!
-        speakText(aiReply);
-
-    } catch (error) {
-        aiMessage.textContent = "Tutor: Oops! Make sure you are connected to the internet and your API key is correct.";
-    }
-    chatWindow.scrollTop = chatWindow.scrollHeight;
-}(text);
+    fetchAIResponse(text);
 }
 
 // 5. Triggers for the Send button and Enter key
@@ -159,6 +127,7 @@ userInput.addEventListener('keypress', function(event) {
         sendMessage();
     }
 });
+
 // --- GRAMMAR QUIZ LOGIC ---
 
 // 1. Create a list of quiz questions
@@ -241,6 +210,7 @@ nextBtn.addEventListener('click', () => {
 
 // 5. Start the quiz immediately when the app loads
 loadQuiz();
+
 // --- SPEECH-TO-TEXT LOGIC ---
 
 // 1. Grab the microphone button from HTML
@@ -288,6 +258,7 @@ if (SpeechRecognition) {
     micBtn.style.display = "none";
     console.log("Speech recognition not supported in this browser.");
 }
+
 // --- TEXT-TO-SPEECH LOGIC ---
 
 // 1. Function to make the AI speak
