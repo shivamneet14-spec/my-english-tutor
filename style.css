@@ -93,3 +93,53 @@ button {
 button:hover {
     background-color: #004494; /* Slightly darker on hover */
 }
+/* --- Quiz Styling --- */
+.options-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.quiz-btn {
+    background-color: #f8f9fa;
+    color: #333;
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: left;
+    font-weight: normal;
+}
+
+.quiz-btn:hover {
+    background-color: #e2e6ea;
+}
+
+/* Colors for right and wrong answers */
+.quiz-btn.correct {
+    background-color: #d4edda;
+    border-color: #28a745;
+    color: #155724;
+}
+
+.quiz-btn.wrong {
+    background-color: #f8d7da;
+    border-color: #dc3545;
+    color: #721c24;
+}
+
+#quiz-feedback {
+    margin-top: 10px;
+    font-size: 14px;
+}
+/* Microphone Button Styling */
+#mic-btn {
+    background-color: #28a745; /* Green color to stand out */
+    padding: 10px 15px;
+    font-size: 16px;
+}
+
+#mic-btn:hover {
+    background-color: #218838;
+}
