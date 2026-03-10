@@ -110,7 +110,46 @@ function sendMessage() {
     chatWindow.scrollTop = chatWindow.scrollHeight;
 
     // Call the AI Brain!
-    fetchAIResponse(text);
+    // 3. Function to talk to the AI Brain (UPDATED WITH VOICE)
+async function fetchAIResponse(userText) {
+    // Show a temporary "Typing..." message
+    const aiMessage = document.createElement('p');
+    aiMessage.textContent = "Tutor is typing...";
+    aiMessage.style.color = "#333";
+    chatWindow.appendChild(aiMessage);
+    chatWindow.scrollTop = chatWindow.scrollHeight;
+
+    // The instructions for how the AI should act
+    const prompt = `You are a friendly, helpful English tutor. The user just said: "${userText}". 
+    First, gently correct any grammar mistakes they made. 
+    Then, reply to them in simple, easy-to-understand English. 
+    Finally, end with a simple question to keep the conversation going. Keep it short.`;
+
+    try {
+        // Send the request to the Gemini API
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                contents: [{ parts: [{ text: prompt }] }]
+            })
+        });
+
+        // Read the AI's reply
+        const data = await response.json();
+        const aiReply = data.candidates[0].content.parts[0].text;
+        
+        // Update the screen with the real reply
+        aiMessage.innerHTML = "<strong>Tutor:</strong> " + aiReply;
+
+        // NEW: Tell the browser to speak the reply out loud!
+        speakText(aiReply);
+
+    } catch (error) {
+        aiMessage.textContent = "Tutor: Oops! Make sure you are connected to the internet and your API key is correct.";
+    }
+    chatWindow.scrollTop = chatWindow.scrollHeight;
+}(text);
 }
 
 // 5. Triggers for the Send button and Enter key
@@ -248,4 +287,22 @@ if (SpeechRecognition) {
     // If the browser (like an older one) doesn't support this, hide the mic button
     micBtn.style.display = "none";
     console.log("Speech recognition not supported in this browser.");
+}
+// --- TEXT-TO-SPEECH LOGIC ---
+
+// 1. Function to make the AI speak
+function speakText(text) {
+    // Stop any current speech so voices don't overlap
+    window.speechSynthesis.cancel();
+    
+    // Create a new speech package
+    const speech = new SpeechSynthesisUtterance(text);
+    
+    // Set the language and make it slightly slower for learning
+    speech.lang = 'en-US';
+    speech.rate = 0.9; // 1.0 is normal speed, 0.9 is a bit slower
+    speech.pitch = 1.0;
+
+    // Speak it out loud!
+    window.speechSynthesis.speak(speech);
 }
