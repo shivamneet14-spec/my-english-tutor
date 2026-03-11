@@ -178,3 +178,27 @@ if (SpeechRecognition) {
 } else {
     micBtn.style.display = "none";
 }
+// --- Contact Modal Logic ---
+
+// 1. Get the elements
+const contactBtn = document.getElementById('contact-info-btn');
+const contactModal = document.getElementById('contact-modal');
+const closeContactBtn = document.getElementById('close-contact');
+
+// 2. Open the modal when the sidebar link is clicked
+contactBtn.addEventListener('click', function(event) {
+    event.preventDefault(); // Prevents the page from jumping to the top
+    contactModal.style.display = 'block';
+});
+
+// 3. Close the modal when the '✖' button is clicked
+closeContactBtn.addEventListener('click', function() {
+    contactModal.style.display = 'none';
+});
+
+// 4. (Optional but recommended) Close the modal if the user clicks anywhere outside of it
+window.addEventListener('click', function(event) {
+    if (event.target === contactModal) {
+        contactModal.style.display = 'none';
+    }
+});
